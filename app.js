@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 const host = "localhost";
 
 server.listen(port, host,  ()=> {
-  console.log('started on port 5000');
+  console.log(`started at host: ${host}, port: ${port}`);
 });
 let numUsers = 0;
 
@@ -45,9 +45,10 @@ io.on('connection', (socket) => {
   });
 
 
-  socket.on('typing', function () {
+  socket.on('typing', function (data) {
     socket.broadcast.emit('typing', {
-      username: socket.username
+      status: true,
+      username: data
     });
 
     // console.log('typing', username);
@@ -55,8 +56,8 @@ io.on('connection', (socket) => {
 
   // when the client emits 'stop typing', we broadcast it to others
   socket.on('stop typing', function () {
-    socket.broadcast.emit('stop typing', {
-      username: socket.username
+    socket.broadcast.emit('typing', {
+      status: false,
     });
   });
 
@@ -71,7 +72,7 @@ io.on('connection', (socket) => {
         username: socket.username,
         numUsers: numUsers
       });
-      console.log( 'left', username );
+      // console.log( 'left', username );
     }
   });
 
